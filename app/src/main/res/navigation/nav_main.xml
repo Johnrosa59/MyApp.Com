@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.joaorosa.myappcom.presentation.main.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_workouts"
+        android:name="com.joaorosa.myappcom.presentation.main.workouts.WorkoutsFragment"
+        android:label="Treinos"
+        tools:layout="@layout/fragment_workouts" />
+
+    <fragment
+        android:id="@+id/navigation_recipes"
+        android:name="com.joaorosa.myappcom.presentation.main.recipes.RecipesFragment"
+        android:label="Nutrição"
+        tools:layout="@layout/fragment_recipes" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.joaorosa.myappcom.presentation.main.profile.ProfileFragment"
+        android:label="Perfil"
+        tools:layout="@layout/fragment_profile" />
+</navigation>

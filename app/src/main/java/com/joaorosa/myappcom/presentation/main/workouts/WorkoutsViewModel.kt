@@ -2,7 +2,6 @@ package com.joaorosa.myappcom.presentation.main.workouts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.joaorosa.myappcom.domain.model.WorkoutPlan
 import com.joaorosa.myappcom.domain.usecase.ClearWorkoutDataUseCase
@@ -26,7 +25,7 @@ class WorkoutsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val workoutPlansState: LiveData<List<WorkoutPlan>> =
-        getWorkoutPlansUseCase.executeObservePlans().asLiveData()
+        getWorkoutPlansUseCase.executeObservePlans()
 
     fun createWorkoutPlan(titleInput: String, categoryInput: String) {
         viewModelScope.launch {

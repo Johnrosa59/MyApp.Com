@@ -1,20 +1,20 @@
 package com.joaorosa.myappcom.data.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import com.joaorosa.myappcom.data.local.dao.WorkoutDao
 import com.joaorosa.myappcom.data.local.entity.ExerciseEntity
 import com.joaorosa.myappcom.data.local.entity.WorkoutPlanEntity
 import com.joaorosa.myappcom.domain.model.Exercise
 import com.joaorosa.myappcom.domain.model.WorkoutPlan
 import com.joaorosa.myappcom.domain.repository.WorkoutRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class WorkoutRepositoryImpl @Inject constructor(
     private val workoutDao: WorkoutDao
 ) : WorkoutRepository {
 
-    override fun observeWorkoutPlans(): Flow<List<WorkoutPlan>> {
+    override fun observeWorkoutPlans(): LiveData<List<WorkoutPlan>> {
         return workoutDao.observeWorkoutPlansWithExercises().map { list ->
             list.map { item ->
                 WorkoutPlan(

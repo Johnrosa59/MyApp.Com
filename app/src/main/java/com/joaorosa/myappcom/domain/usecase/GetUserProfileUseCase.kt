@@ -1,18 +1,17 @@
 package com.joaorosa.myappcom.domain.usecase
 
-import com.joaorosa.myappcom.domain.model.Resource
+import com.google.firebase.auth.FirebaseAuth
 import com.joaorosa.myappcom.domain.model.User
-import com.joaorosa.myappcom.domain.repository.AuthRepository
 import com.joaorosa.myappcom.domain.repository.UserProfileRepository
 import javax.inject.Inject
 
 class GetUserProfileUseCase @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val firebaseAuth: FirebaseAuth
 ) {
-    suspend fun executeFetchProfile(): Resource<User> {
-        val currentUserId = authRepository.getCurrentUserId()
-            ?: return Resource.Error("User not authenticated.")
-        return userProfileRepository.getUserProfile(currentUserId)
+    suspend fun executeFetchProfile(): User {
+        val currentUid = firebaseAuth.currentUser?.uid
+            ?: throw Exception("Usuário não autenticado.")
+        return userProfileRepository.getUserProfile(currentUid)
     }
 }

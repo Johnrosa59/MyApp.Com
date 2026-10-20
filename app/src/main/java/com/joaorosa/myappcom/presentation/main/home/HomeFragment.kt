@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
     private fun renderUserData(user: User) {
         renderLoadingState(false)
         binding.txtProfileName.text = "Usuário: ${user.name}"
-        binding.txtProfileEmail.text = "Email: ${user.email}"
+        binding.txtProfileEmail.text = "E-mail: ${user.email}"
         binding.txtCalorieGoal.text = "Meta Calórica Diária: ${user.dailyCalorieGoal} kcal"
     }
 

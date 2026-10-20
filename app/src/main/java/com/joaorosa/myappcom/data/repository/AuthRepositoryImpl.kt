@@ -14,7 +14,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun loginUser(emailInput: String, passwordInput: String): String {
         val result = firebaseAuth.signInWithEmailAndPassword(emailInput, passwordInput).await()
+        println(result.user?.uid)
         return result.user?.uid ?: throw Exception("Usuário não encontrado.")
+
     }
 
     override suspend fun registerUser(

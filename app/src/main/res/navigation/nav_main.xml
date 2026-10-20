@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.joaorosa.myappcom.presentation.main.home.HomeFragment"
-        android:label="Home"
+        android:label="Início"
         tools:layout="@layout/fragment_home" />
 
     <fragment

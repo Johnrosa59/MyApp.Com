@@ -46,7 +46,7 @@ class AuthViewModel @Inject constructor(
                 val userId = loginUseCase.executeLogin(emailInput, passwordInput)
                 _loginState.value = userId
             } catch (e: Exception) {
-                _errorMessage.value = e.localizedMessage ?: "Erro ao fazer login."
+                _errorMessage.value = FirebaseErrorTranslator.translate(e, "Erro ao fazer login.")
             } finally {
                 _isLoading.value = false
             }
@@ -60,7 +60,7 @@ class AuthViewModel @Inject constructor(
                 val userId = registerUseCase.executeRegister(emailInput, passwordInput, nameInput)
                 _registerState.value = userId
             } catch (e: Exception) {
-                _errorMessage.value = e.localizedMessage ?: "Erro ao cadastrar."
+                _errorMessage.value = FirebaseErrorTranslator.translate(e, "Erro ao cadastrar.")
             } finally {
                 _isLoading.value = false
             }
@@ -74,7 +74,7 @@ class AuthViewModel @Inject constructor(
                 resetPasswordUseCase.executeResetPassword(emailInput)
                 _resetPasswordState.value = Unit
             } catch (e: Exception) {
-                _errorMessage.value = e.localizedMessage ?: "Erro ao redefinir senha."
+                _errorMessage.value = FirebaseErrorTranslator.translate(e, "Erro ao redefinir senha.")
             } finally {
                 _isLoading.value = false
             }

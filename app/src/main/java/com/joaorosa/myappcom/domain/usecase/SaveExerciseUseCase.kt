@@ -13,7 +13,7 @@ class SaveExerciseUseCase @Inject constructor(
         repsInput: Int,
         weightInput: Double
     ): Long {
-        val finalName = nameInput.ifBlank { "Exercise" }
+        val finalName = nameInput.ifBlank { "Exercício" }
         val finalSets = if (setsInput > 0) setsInput else 3
         val finalReps = if (repsInput > 0) repsInput else 10
         return workoutRepository.saveExercise(planIdInput, finalName, finalSets, finalReps, weightInput)

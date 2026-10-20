@@ -7,8 +7,8 @@ class SaveWorkoutPlanUseCase @Inject constructor(
     private val workoutRepository: WorkoutRepository
 ) {
     suspend fun executeSavePlan(titleInput: String, categoryInput: String): Long {
-        val finalTitle = titleInput.ifBlank { "Workout Plan" }
-        val finalCategory = categoryInput.ifBlank { "General" }
+        val finalTitle = titleInput.ifBlank { "Plano de Treino" }
+        val finalCategory = categoryInput.ifBlank { "Geral" }
         return workoutRepository.saveWorkoutPlan(finalTitle, finalCategory)
     }
 }

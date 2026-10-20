@@ -18,12 +18,12 @@ class FirebaseAuthSource @Inject constructor(
 
     suspend fun loginWithEmailAndPassword(emailInput: String, passwordInput: String): String {
         val authResult = firebaseAuth.signInWithEmailAndPassword(emailInput, passwordInput).await()
-        return authResult.user?.uid ?: throw IllegalStateException("User ID not found after login.")
+        return authResult.user?.uid ?: throw IllegalStateException("ID do usuário não encontrado após o login.")
     }
 
     suspend fun registerWithEmailAndPassword(emailInput: String, passwordInput: String): String {
         val authResult = firebaseAuth.createUserWithEmailAndPassword(emailInput, passwordInput).await()
-        return authResult.user?.uid ?: throw IllegalStateException("User ID not found after registration.")
+        return authResult.user?.uid ?: throw IllegalStateException("ID do usuário não encontrado após o cadastro.")
     }
 
     suspend fun sendPasswordResetEmail(emailInput: String) {

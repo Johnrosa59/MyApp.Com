@@ -1,6 +1,5 @@
 package com.joaorosa.myappcom.domain.usecase
 
-import com.joaorosa.myappcom.domain.model.Resource
 import com.joaorosa.myappcom.domain.repository.AuthRepository
 import javax.inject.Inject
 
@@ -11,15 +10,15 @@ class RegisterUseCase @Inject constructor(
         emailInput: String,
         passwordInput: String,
         nameInput: String
-    ): Resource<String> {
-        if (nameInput.isBlank()) {
-            return Resource.Error("Name cannot be empty.")
+    ): String {
+        if (nameInput.isEmpty()) {
+            throw IllegalArgumentException("Informe o nome.")
         }
-        if (emailInput.isBlank()) {
-            return Resource.Error("Email address cannot be empty.")
+        if (emailInput.isEmpty()) {
+            throw IllegalArgumentException("Informe o e-mail.")
         }
         if (passwordInput.length < 6) {
-            return Resource.Error("Password must be at least 6 characters.")
+            throw IllegalArgumentException("A senha deve ter pelo menos 6 caracteres.")
         }
         return authRepository.registerUser(emailInput, passwordInput, nameInput)
     }

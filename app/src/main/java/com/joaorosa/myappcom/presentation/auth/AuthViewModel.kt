@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.joaorosa.myappcom.domain.model.Resource
-import com.joaorosa.myappcom.domain.repository.AuthRepository
+import com.google.firebase.auth.FirebaseAuth
 import com.joaorosa.myappcom.domain.usecase.LoginUseCase
 import com.joaorosa.myappcom.domain.usecase.RegisterUseCase
 import com.joaorosa.myappcom.domain.usecase.ResetPasswordUseCase
@@ -15,46 +14,70 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
-    private val resetPasswordUseCase: ResetPasswordUseCase
+    private val resetPasswordUseCase: ResetPasswordUseCase,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
-    private val _loginState: MutableLiveData<Resource<String>> = MutableLiveData()
-    val loginState: LiveData<Resource<String>> get() = _loginState
+    private val _loginState = MutableLiveData<String>()
+    val loginState: LiveData<String> get() = _loginState
 
-    private val _registerState: MutableLiveData<Resource<String>> = MutableLiveData()
-    val registerState: LiveData<Resource<String>> get() = _registerState
+    private val _registerState = MutableLiveData<String>()
+    val registerState: LiveData<String> get() = _registerState
 
-    private val _resetPasswordState: MutableLiveData<Resource<Unit>> = MutableLiveData()
-    val resetPasswordState: LiveData<Resource<Unit>> get() = _resetPasswordState
+    private val _resetPasswordState = MutableLiveData<Unit>()
+    val resetPasswordState: LiveData<Unit> get() = _resetPasswordState
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     fun isUserLoggedIn(): Boolean {
-        return authRepository.isUserLoggedIn()
+        return firebaseAuth.currentUser != null
     }
 
     fun loginUser(emailInput: String, passwordInput: String) {
-        _loginState.value = Resource.Loading
+        _isLoading.value = true
         viewModelScope.launch {
-            val result = loginUseCase.executeLogin(emailInput, passwordInput)
-            _loginState.postValue(result)
+            try {
+                val userId = loginUseCase.executeLogin(emailInput, passwordInput)
+                _loginState.value = userId
+            } catch (e: Exception) {
+                _errorMessage.value = e.localizedMessage ?: "Erro ao fazer login."
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     fun registerUser(emailInput: String, passwordInput: String, nameInput: String) {
-        _registerState.value = Resource.Loading
+        _isLoading.value = true
         viewModelScope.launch {
-            val result = registerUseCase.executeRegister(emailInput, passwordInput, nameInput)
-            _registerState.postValue(result)
+            try {
+                val userId = registerUseCase.executeRegister(emailInput, passwordInput, nameInput)
+                _registerState.value = userId
+            } catch (e: Exception) {
+                _errorMessage.value = e.localizedMessage ?: "Erro ao cadastrar."
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     fun sendPasswordReset(emailInput: String) {
-        _resetPasswordState.value = Resource.Loading
+        _isLoading.value = true
         viewModelScope.launch {
-            val result = resetPasswordUseCase.executeResetPassword(emailInput)
-            _resetPasswordState.postValue(result)
+            try {
+                resetPasswordUseCase.executeResetPassword(emailInput)
+                _resetPasswordState.value = Unit
+            } catch (e: Exception) {
+                _errorMessage.value = e.localizedMessage ?: "Erro ao redefinir senha."
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 }

@@ -5,10 +5,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.lifecycle.LiveData
 import com.joaorosa.myappcom.data.local.entity.ExerciseEntity
 import com.joaorosa.myappcom.data.local.entity.WorkoutPlanEntity
 import com.joaorosa.myappcom.data.local.entity.WorkoutPlanWithExercises
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkoutDao {
@@ -20,7 +20,7 @@ interface WorkoutDao {
 
     @Transaction
     @Query("SELECT * FROM workout_plans ORDER BY planId DESC")
-    fun observeWorkoutPlansWithExercises(): Flow<List<WorkoutPlanWithExercises>>
+    fun observeWorkoutPlansWithExercises(): LiveData<List<WorkoutPlanWithExercises>>
 
     @Query("DELETE FROM exercises WHERE exerciseId = :exerciseId")
     suspend fun deleteExerciseById(exerciseId: Long): Int

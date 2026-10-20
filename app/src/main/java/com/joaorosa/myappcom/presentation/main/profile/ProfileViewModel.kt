@@ -4,9 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.joaorosa.myappcom.domain.model.Resource
+import com.google.firebase.auth.FirebaseAuth
 import com.joaorosa.myappcom.domain.model.User
-import com.joaorosa.myappcom.domain.repository.AuthRepository
 import com.joaorosa.myappcom.domain.usecase.GetUserProfileUseCase
 import com.joaorosa.myappcom.domain.usecase.SaveUserProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,34 +14,52 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
     private val getUserProfileUseCase: GetUserProfileUseCase,
-    private val saveUserProfileUseCase: SaveUserProfileUseCase
+    private val saveUserProfileUseCase: SaveUserProfileUseCase,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
-    private val _userProfileState: MutableLiveData<Resource<User>> = MutableLiveData()
-    val userProfileState: LiveData<Resource<User>> get() = _userProfileState
+    private val _userProfileState = MutableLiveData<User>()
+    val userProfileState: LiveData<User> get() = _userProfileState
 
-    private val _saveState: MutableLiveData<Resource<Unit>> = MutableLiveData()
-    val saveState: LiveData<Resource<Unit>> get() = _saveState
+    private val _saveSuccess = MutableLiveData<Unit>()
+    val saveSuccess: LiveData<Unit> get() = _saveSuccess
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
     fun loadProfile() {
-        _userProfileState.value = Resource.Loading
+        _isLoading.value = true
         viewModelScope.launch {
-            val result = getUserProfileUseCase.executeFetchProfile()
-            _userProfileState.postValue(result)
+            try {
+                val user = getUserProfileUseCase.executeFetchProfile()
+                _userProfileState.value = user
+            } catch (e: Exception) {
+                _errorMessage.value = e.localizedMessage ?: "Erro ao carregar perfil."
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     fun updateProfile(user: User) {
-        _saveState.value = Resource.Loading
+        _isLoading.value = true
         viewModelScope.launch {
-            val result = saveUserProfileUseCase.executeSaveProfile(user)
-            _saveState.postValue(result)
+            try {
+                saveUserProfileUseCase.executeSaveProfile(user)
+                _saveSuccess.value = Unit
+            } catch (e: Exception) {
+                _errorMessage.value = e.localizedMessage ?: "Erro ao salvar perfil."
+            } finally {
+                _isLoading.value = false
+            }
         }
     }
 
     fun logout() {
-        authRepository.logoutUser()
+        firebaseAuth.signOut()
     }
 }
